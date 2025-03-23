@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Расчёт стоимости материалов</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    #loading {
+      color: #666;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Расчёт стоимости материалов</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    #loading {
+      color: #666;
+    }
+    #materials-list {
+      margin-top: 20px;
+    }
+    .material-item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .material-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Расчёт стоимости материалов</h1>
+  <div id="loading">Загрузка данных...</div>
+  <div id="materials-list" style="display: none;">
+    <!-- Сюда будут добавлены материалы -->
+  </div>
+
+  <script>
+    // URL вашего Google Apps Script
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxXv1QfseIVH_h6O4uzQB0xr3irSzGbaQ2fxyyInzL_iekQ4opGeydHVGgw7Ez9eIBd2w/exec';
+
+    // Функция для загрузки данных
+    async function loadMaterials() {
+      try {
+        // Показываем сообщение о загрузке
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('materials-list').style.display = 'none';
+
+        // Запрос к API
+        const response = await fetch(scriptUrl);
+        if (!response.ok) {
+          throw new Error('Ошибка при загрузке данных');
+        }
+
+        // Парсим JSON
+        const result = await response.json();
+        if (!result.data || result.data.length === 0) {
+          throw new Error('Нет данных для отображения');
+        }
+
+        // Очищаем список
+        const materialsList = document.getElementById('materials-list');
+        materialsList.innerHTML = '';
+
+        // Добавляем материалы в список
+        result.data.forEach(item => {
+          const materialItem = document.createElement('div');
+          materialItem.className = 'material-item';
+          materialItem.innerHTML = 
+            <strong>${item.name}</strong>: ${item.price} руб.
+          ;
+          materialsList.appendChild(materialItem);
+        });
+
+        // Показываем список и скрываем сообщение о загрузке
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('materials-list').style.display = 'block';
+
+      } catch (error) {
+        // Обработка ошибок
+        document.getElementById('loading').innerHTML = Ошибка: ${error.message};
+        console.error(error);
+      }
+    }
+
+    // Загружаем данные при загрузке страницы
+    window.onload = loadMaterials;
+  </script>
+</body>
+</html>
